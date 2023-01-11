@@ -1,40 +1,63 @@
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { Canvas, MeshProps, useFrame } from '@react-three/fiber'
-
-function Box(props: MeshProps) {
-  // This reference gives us direct access to the THREE.Mesh object
-  const ref = useRef<any>();
-  // Hold state for hovered and clicked events
-  const [hovered, hover] = useState(false)
-  const [clicked, click] = useState(false)
-  // Subscribe this component to the render-loop, rotate the mesh every frame
-  useFrame((state, delta) => (ref.current.rotation.x += delta))
-  // Return the view, these are regular Threejs elements expressed in JSX
-  return (
-    <mesh
-      {...props}
-      ref={ref}
-      scale={clicked ? 1.5 : 1}
-      onClick={(event) => click(!clicked)}
-      onPointerOver={(event) => hover(true)}
-      onPointerOut={(event) => hover(false)}>
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
-    </mesh>
-  )
-}
-
+import { Grid, MapControls, OrbitControls } from '@react-three/drei';
+import { ChibiCharacter } from './components/ChibiCharacter';
+import { DragonBonesTicker } from './components/DragonBonesTicker';
 
 function App() {
-  const [count, setCount] = useState(0)
+
+  const pyramids = useMemo(() =>
+    Array.from({ length: 500 }).map((_, i) =>
+      <mesh key={i}
+        position={[
+          Math.random() * 3200 - 1600,
+          50,
+          Math.random() * 3200 - 1600
+        ]}>
+        <cylinderGeometry args={[0, 10, 100, 4, 1]} />
+        <meshStandardMaterial color={0xffffff} flatShading />
+      </mesh>), []);
 
   return (
-    <Canvas>
-      <ambientLight />
-      <pointLight position={[10, 10, 10]} />
-      <Box position={[-1.2, 0, 0]} />
-      <Box position={[1.2, 0, 0]} />
-    </Canvas>
+    <Canvas
+      gl={{ antialias: true, }}
+      camera={{ position: [0, 100, 300], far: 10000, near: 1 }}>
+      {/* <fogExp2 attach="fog" args={[0xcccccc, 0.002]} /> */}
+      <color attach="background" args={[0x69655b]} />
+      {pyramids}
+      {/* <directionalLight args={[0xffffff]} position={[1, 1, 1]} />
+      <directionalLight args={[0x002288]} position={[-1, -1, -1]} />
+      <ambientLight args={[0x222222]} /> */}
+      <ambientLight args={[0xffffff, 1]} />
+
+      <MapControls />
+
+      <ChibiCharacter />
+
+      {/* <mesh
+        scale={100}
+        position={[0, 200, 0]}>
+        <boxGeometry args={[1, 1, 1]} />
+        <meshStandardMaterial color={'orange'} />
+      </mesh> */}
+
+      <Grid
+        position={[0, 0, 0]}
+        args={[100, 100]}
+        cellSize={10}
+        cellThickness={1.5}
+        cellColor='#6f6f6f'
+
+        sectionSize={100}
+        sectionThickness={1.5}
+        sectionColor='#9d4b4b'
+        fadeDistance={1000}
+        //fadeStrength={1}
+        //followCamera= false
+        infiniteGrid
+      />
+      <DragonBonesTicker />
+    </Canvas >
   )
 }
 

@@ -26,7 +26,7 @@ function App() {
   return (
     <Canvas
       gl={{ antialias: true, }}
-      camera={{ position: [100, 50, 100], far: 10000, near: 1 }}>
+      camera={{ position: [40, 40, 40], far: 10000, near: 1 }}>
       {/* <fogExp2 attach="fog" args={[0xcccccc, 0.002]} /> */}
       <color attach="background" args={[0x69655b]} />
       {pyramids}
@@ -37,7 +37,7 @@ function App() {
 
       {/* <CameraTester /> */}
 
-      <MapControls />
+      {/* <MapControls /> */}
 
       {controlsHook}
 

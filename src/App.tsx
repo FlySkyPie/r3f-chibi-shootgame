@@ -1,8 +1,11 @@
 import { useMemo, useRef, useState } from 'react'
 import { Canvas, MeshProps, useFrame } from '@react-three/fiber'
 import { Grid, MapControls, OrbitControls } from '@react-three/drei';
+
 import { ChibiCharacter } from './components/ChibiCharacter';
 import { DragonBonesTicker } from './components/DragonBonesTicker';
+import { useWasdControls } from './hooks/useWasdControls';
+import { CameraTester } from './components/CameraTseter';
 
 function App() {
 
@@ -11,17 +14,19 @@ function App() {
       <mesh key={i}
         position={[
           Math.random() * 3200 - 1600,
-          50,
+          15,
           Math.random() * 3200 - 1600
         ]}>
-        <cylinderGeometry args={[0, 10, 100, 4, 1]} />
+        <cylinderGeometry args={[0, 10, 30, 4, 1]} />
         <meshStandardMaterial color={0xffffff} flatShading />
       </mesh>), []);
+
+  const { controlsHook, position, isMoving } = useWasdControls();
 
   return (
     <Canvas
       gl={{ antialias: true, }}
-      camera={{ position: [0, 100, 300], far: 10000, near: 1 }}>
+      camera={{ position: [100, 50, 100], far: 10000, near: 1 }}>
       {/* <fogExp2 attach="fog" args={[0xcccccc, 0.002]} /> */}
       <color attach="background" args={[0x69655b]} />
       {pyramids}
@@ -30,9 +35,15 @@ function App() {
       <ambientLight args={[0x222222]} /> */}
       <ambientLight args={[0xffffff, 1]} />
 
+      {/* <CameraTester /> */}
+
       <MapControls />
 
-      <ChibiCharacter />
+      {controlsHook}
+
+      <ChibiCharacter
+        position={position}
+        isMoving={isMoving} />
 
       {/* <mesh
         scale={100}

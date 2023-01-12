@@ -1,6 +1,5 @@
 import { ThreeFactory } from '@flyskypie/dragonbones-threejs';
 import { Billboard, useTexture } from '@react-three/drei';
-import { useFrame } from '@react-three/fiber';
 import { useEffect, useMemo, useState } from 'react';
 import { Group, sRGBEncoding } from 'three';
 
@@ -8,10 +7,22 @@ import skeJson from './lyana/lyana_ske.json';
 import texJson from './lyana/lyana_tex.json';
 import texPng from './lyana/lyana_tex.png';
 
+type IProps = {
+    position: [number, number, number];
+    isMoving: boolean;
+};
 
-export const ChibiCharacter: React.FC = () => {
+export const ChibiCharacter: React.FC<IProps> = ({ position, isMoving }) => {
     const [group, setGroup] = useState<Group | null>(null);
-    const texture = useTexture(texPng);
+    const texture = useTexture(texPng, (texture) => {
+        if (Array.isArray(texture)) {
+            texture.forEach(t => {
+                t.encoding = sRGBEncoding;
+            })
+            return;
+        }
+        texture.encoding = sRGBEncoding;
+    });
 
     const armatureDisplay = useMemo(() => {
         const { factory } = ThreeFactory;
@@ -23,16 +34,20 @@ export const ChibiCharacter: React.FC = () => {
             throw new Error('');
         }
 
-        console.log(texture);
-        texture.encoding = sRGBEncoding;
-
-        armatureDisplay.scale.setY(-1);
+        armatureDisplay.scale.set(0.1, -0.1, 0.1);
         armatureDisplay.translateY(1);
-
         armatureDisplay.animation.play("attack", 0);
 
         return armatureDisplay;
     }, [texture]);
+
+    useEffect(() => {
+        if (isMoving) {
+            armatureDisplay.animation.play("move", 0);
+        } else {
+            armatureDisplay.animation.play("wait", 0);
+        }
+    }, [armatureDisplay, isMoving])
 
     useEffect(() => {
         if (group === null) {
@@ -48,7 +63,10 @@ export const ChibiCharacter: React.FC = () => {
 
 
 
-    return <Billboard>
-        <group ref={ref => setGroup(ref)} />
-    </Billboard>;
+    return (
+        <Billboard position={position}>
+            <group ref={ref => setGroup(ref)}
+            />
+        </Billboard>
+    );
 }

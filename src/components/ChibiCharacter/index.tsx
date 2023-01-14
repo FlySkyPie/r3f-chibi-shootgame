@@ -43,6 +43,15 @@ export const ChibiCharacter: React.FC = () => {
     }, [texture]);
 
     useEffect(() => {
+        if (direction === 'right') {
+            armatureDisplay.scale.set(0.1, -0.1, 0.1);
+        } else {
+            armatureDisplay.scale.set(-0.1, -0.1, 0.1);
+        }
+
+    }, [, armatureDisplay, direction,]);
+
+    useEffect(() => {
         console.log(status)
         if (status === 'moving') {
             armatureDisplay.animation.play("move", 0);
@@ -57,15 +66,6 @@ export const ChibiCharacter: React.FC = () => {
             armatureDisplay.animation.play("reload");
         }
     }, [armatureDisplay, status])
-
-    useEffect(() => {
-        if (direction === 'right') {
-            armatureDisplay.scale.set(0.1, -0.1, 0.1);
-        } else {
-            armatureDisplay.scale.set(-0.1, -0.1, 0.1);
-        }
-
-    }, [, armatureDisplay, direction,]);
 
     useEffect(() => {
         if (group === null) {

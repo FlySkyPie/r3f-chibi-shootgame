@@ -110,25 +110,48 @@ export const usePlayerStore = create<IPlayerStore>((set) => ({
         }
     }),
     attack: () => set(({ player, weapon }) => {
-        const { status } = player;
+        const { status, position, rotation, direction: prevDirection } = player;
         if (status === 'reloading' || weapon.ammo === 0) {
             return {};
+        }
+        let direction = prevDirection;
+        if (status === 'attack') {
+            const right = new Vector3(0, 0, -1).applyAxisAngle(new Vector3(0, 1, 0), rotation);
+            const directionVec = new Vector3(...weapon.target).sub(new Vector3(...position)).normalize();
+            const v = right.dot(directionVec);
+            if (v >= 0) {
+                direction = 'right';
+            } else {
+                direction = 'left';
+            }
         }
 
         return {
             player: {
                 ...player,
+                direction,
                 status: 'attack'
             },
         }
     }),
-    aim: (target: Vector3Tuple) => set(({ player: { status }, weapon }) => {
+    aim: (target: Vector3Tuple) => set(({ player, weapon }) => {
+        const { position, status, rotation, direction: prevDirection } = player;
+        let direction = prevDirection;
         if (status === 'attack') {
-            /**
-             * @todo Update direction
-             */
+            const right = new Vector3(0, 0, -1).applyAxisAngle(new Vector3(0, 1, 0), rotation);
+            const directionVec = new Vector3(...weapon.target).sub(new Vector3(...position)).normalize();
+            const v = right.dot(directionVec);
+            if (v >= 0) {
+                direction = 'right';
+            } else {
+                direction = 'left';
+            }
         }
         return {
+            player: {
+                ...player,
+                direction,
+            },
             weapon: {
                 ...weapon,
                 target,

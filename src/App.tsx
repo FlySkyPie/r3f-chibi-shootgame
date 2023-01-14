@@ -32,7 +32,7 @@ function App() {
 
       <ChibiCharacter />
 
-      <axesHelper args={[100]} position={[0, 1, 0]} />
+      {/* <axesHelper args={[100]} position={[0, 1, 0]} /> */}
 
       <LaserPointer />
 

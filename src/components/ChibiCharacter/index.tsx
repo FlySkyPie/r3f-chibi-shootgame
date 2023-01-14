@@ -75,8 +75,7 @@ export const ChibiCharacter: React.FC<IProps> = ({ position, isMoving, moveDirec
 
     return (
         <Billboard position={position}>
-            <group ref={ref => setGroup(ref)}
-            />
+            <group ref={ref => setGroup(ref)} />
         </Billboard>
     );
-}
+};

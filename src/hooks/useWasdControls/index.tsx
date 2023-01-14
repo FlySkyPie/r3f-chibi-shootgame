@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useFrame, useThree } from '@react-three/fiber';
 import { Quaternion, Vector3 } from 'three'
 

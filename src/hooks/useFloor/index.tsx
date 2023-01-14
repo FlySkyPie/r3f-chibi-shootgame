@@ -3,9 +3,9 @@ import { useMemo, useState } from "react"
 import { Mesh } from "three";
 
 export const useFloor = () => {
-    const [meshRef, setMeshRef] = useState<Mesh | null>(null)
+    const [floorMesh, setMeshRef] = useState<Mesh | null>(null)
 
-    const floorMesh = useMemo(() =>
+    const floorMeshView = useMemo(() =>
         <mesh
             ref={ref => setMeshRef(ref)}
             rotation={[-Math.PI * 0.5, 0, 0]} >
@@ -15,7 +15,7 @@ export const useFloor = () => {
 
     const floorView = useMemo(() =>
         <>
-            {floorMesh}
+            {floorMeshView}
             <Grid
                 position={[0, 0.05, 0]}
                 args={[100, 100]}
@@ -29,7 +29,7 @@ export const useFloor = () => {
                 fadeDistance={1000}
                 infiniteGrid
             />
-        </>, [floorMesh]);
+        </>, [floorMeshView]);
 
-    return { floorRef: meshRef, floorView };
+    return { floorMesh, floorView };
 }

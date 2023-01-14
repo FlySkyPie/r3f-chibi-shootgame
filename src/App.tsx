@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Canvas, } from '@react-three/fiber'
 
 import { ChibiCharacter } from './components/ChibiCharacter';
@@ -6,10 +6,15 @@ import { DragonBonesTicker } from './components/DragonBonesTicker';
 import { useWasdControls } from './hooks/useWasdControls';
 import { RandomPyramids } from './components/RandomPyramids';
 import { useFloor } from './hooks/useFloor';
+import { useRaycast } from './hooks/useRaycast';
+import { LaserPointer } from './components/LaserPointer';
 
 function App() {
-  const { controlsHook, position, isMoving, moveDirection } = useWasdControls();
-  const { floorView, floorRef } = useFloor();
+  const {
+    controlsHook, position: characterPosition, isMoving, moveDirection
+  } = useWasdControls();
+  const { floorView, floorMesh } = useFloor();
+  const { raycastHook, raycastingPoint } = useRaycast({ floorMesh });
 
   return (
     <Canvas
@@ -25,12 +30,17 @@ function App() {
       <RandomPyramids />
 
       <ChibiCharacter
-        position={position}
+        position={characterPosition}
         moveDirection={moveDirection}
         isMoving={isMoving} />
 
+      <LaserPointer
+        point0={characterPosition}
+        point1={raycastingPoint} />
+
       {/* <MapControls /> */}
       {controlsHook}
+      {raycastHook}
       <DragonBonesTicker />
     </Canvas >
   )

@@ -3,13 +3,10 @@ import { Line } from "@react-three/drei";
 import { useMemo } from "react";
 import { Vector3, Vector3Tuple } from "three";
 
-type IProps = {
-    point1: Vector3Tuple;
-};
-
-export const LaserPointer: React.FC<IProps> = ({  point1 }) => {
+export const LaserPointer: React.FC = ({  }) => {
     const {
         player: { position: point0, },
+        weapon: { target: point1 }
     } = usePlayerStore();
 
     const centerPoint = useMemo<Vector3Tuple>(() => [

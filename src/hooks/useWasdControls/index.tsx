@@ -22,7 +22,7 @@ const useCodes = () => {
 }
 
 const WasdControls: React.FC = () => {
-    const { moveRelativeY, moveRelativeX, rotate, setMoving, resetMove } = usePlayerStore();
+    const { moveRelativeY, moveRelativeX, rotate, stopMoving } = usePlayerStore();
     const { codes } = useCodes();
 
     useFrame((_, delta) => {
@@ -42,9 +42,9 @@ const WasdControls: React.FC = () => {
         if (!codes.has('KeyW') && !codes.has('KeyA') &&
             !codes.has('KeyS') && !codes.has('KeyD') &&
             !codes.has('KeyQ') && !codes.has('KeyE')) {
-                resetMove();
+                stopMoving();
         } else {
-            
+
         }
     })
     return null

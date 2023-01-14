@@ -1,13 +1,15 @@
+import { usePlayerStore } from "@/store/usePlayerStore";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useState } from "react";
-import { Mesh, Raycaster, Vector2 } from "three";
+import { Mesh, Raycaster, Vector2, Vector3Tuple } from "three";
 
 type IRayCastHookProps = {
     floorMesh: Mesh | null;
-    setRaycastingPoint: React.Dispatch<React.SetStateAction<[number, number, number]>>;
+    //setRaycastingPoint: React.Dispatch<React.SetStateAction<Vector3Tuple>>;
 };
 
-const RaycastHook: React.FC<IRayCastHookProps> = ({ floorMesh, setRaycastingPoint }) => {
+const RaycastHook: React.FC<IRayCastHookProps> = ({ floorMesh }) => {
+    const { aim } = usePlayerStore();
     const { camera, gl } = useThree();
     const [pointer, setPointer] = useState<[number, number]>([0, 0]);
     const [raycaster] = useState(() => new Raycaster());
@@ -21,7 +23,7 @@ const RaycastHook: React.FC<IRayCastHookProps> = ({ floorMesh, setRaycastingPoin
         const intersects = raycaster.intersectObject(floorMesh);
 
         if (intersects.length > 0) {
-            setRaycastingPoint(intersects[0].point.toArray());
+            aim(intersects[0].point.toArray());
         }
     })
 
@@ -48,11 +50,11 @@ type IProps = {
 };
 
 export const useRaycast = ({ floorMesh }: IProps) => {
-    const [raycastingPoint, setRaycastingPoint] = useState<[number, number, number]>([0, 0, 0]);
+    // const [raycastingPoint, setRaycastingPoint] = useState<Vector3Tuple>([0, 0, 0]);
     const raycastHook = useMemo(() =>
         <RaycastHook
             floorMesh={floorMesh}
-            setRaycastingPoint={setRaycastingPoint} />, [floorMesh]);
+        />, [floorMesh]);
 
-    return { raycastingPoint, raycastHook };
+    return { raycastHook };
 };

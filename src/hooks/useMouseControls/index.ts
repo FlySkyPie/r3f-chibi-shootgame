@@ -1,16 +1,19 @@
 import { useCallback, useMemo, useState } from "react"
 
+import { usePlayerStore } from "@/store/usePlayerStore";
+import { Vector3Tuple } from "three";
+
 
 export const useMouseControls = () => {
-    const [isPressed, setIsPressed] = useState(false);
+    const { attack, idle } = usePlayerStore();
 
     const handleMouseDown = useCallback<React.MouseEventHandler<HTMLDivElement>>(() => {
-        setIsPressed(true);
-    }, []);
+        attack();
+    }, [attack,]);
 
     const handleMouseUp = useCallback<React.MouseEventHandler<HTMLDivElement>>(() => {
-        setIsPressed(false);
-    }, []);
+        idle();
+    }, [idle]);
 
     const mouseHandlers = useMemo(() => ({
         onMouseDown: handleMouseDown,
@@ -21,5 +24,5 @@ export const useMouseControls = () => {
     ]);
 
 
-    return { mouseHandlers, isPressed };
+    return { mouseHandlers };
 }

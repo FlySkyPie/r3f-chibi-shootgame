@@ -11,7 +11,7 @@ import texPng from './lyana/lyana_tex.png';
 
 export const ChibiCharacter: React.FC = () => {
     const {
-        player: { position, direction }, constrols: { isMoving }
+        player: { position, direction, status },
     } = usePlayerStore();
 
     const [group, setGroup] = useState<Group | null>(null);
@@ -43,12 +43,20 @@ export const ChibiCharacter: React.FC = () => {
     }, [texture]);
 
     useEffect(() => {
-        if (isMoving) {
+        console.log(status)
+        if (status === 'moving') {
             armatureDisplay.animation.play("move", 0);
-        } else {
+        }
+        if (status === 'idle') {
             armatureDisplay.animation.play("wait", 0);
         }
-    }, [armatureDisplay, isMoving])
+        if (status === 'attack') {
+            armatureDisplay.animation.play("attack", 0);
+        }
+        if (status === 'reloading') {
+            armatureDisplay.animation.play("reload");
+        }
+    }, [armatureDisplay, status])
 
     useEffect(() => {
         if (direction === 'right') {

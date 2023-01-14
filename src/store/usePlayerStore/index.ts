@@ -5,8 +5,13 @@ interface IPlayerStore {
     player: {
         position: Vector3Tuple;
         rotation: number;
-        status: 'moving' | 'idle' | 'attack' | 'reload';
+        status: 'moving' | 'idle' | 'attack' | 'reloading';
         direction: 'right' | 'left';
+    };
+    weapon: {
+        reloadable: boolean;
+        ammo: number;
+        target: Vector3Tuple;
     };
     constrols: {
         isMoving: boolean;
@@ -14,8 +19,16 @@ interface IPlayerStore {
     moveRelativeY: (distance: number) => void;
     moveRelativeX: (distance: number) => void;
     rotate: (value: number) => void;
-    setMoving: (value: boolean) => void;
-    resetMove: () => void;
+    stopMoving: () => void;
+    idle: () => void;
+    attack: () => void;
+    aim: (target: Vector3Tuple) => void;
+
+    /**
+     * Not Support yet.
+     */
+    reload: () => void;
+    reloadDone: () => void;
 };
 
 
@@ -26,60 +39,122 @@ export const usePlayerStore = create<IPlayerStore>((set) => ({
         status: 'idle',
         direction: 'right',
     },
+    weapon: {
+        reloadable: false,
+        ammo: 44,
+        target: [0, 0, 0],
+    },
     constrols: {
         isMoving: false,
     },
-    moveRelativeY: (distance: number) => set(({ player, constrols }) => {
-        const { rotation, position } = player;
+    moveRelativeY: (distance: number) => set(({ player, }) => {
+        const { rotation, position, status } = player;
+        if (status !== 'idle' && status !== 'moving') {
+            return {};
+        }
         const forward = new Vector3(-1, 0, 0).applyAxisAngle(new Vector3(0, 1, 0), rotation)
         return {
             player: {
                 ...player,
+                status: 'moving',
                 position: new Vector3(...position).addScaledVector(forward, distance).toArray()
-            },
-            constrols: {
-                ...constrols,
-                isMoving: true,
             },
         }
     }),
-    moveRelativeX: (distance: number) => set(({ player, constrols }) => {
-        const { rotation, position } = player;
+    moveRelativeX: (distance: number) => set(({ player, }) => {
+        const { rotation, position, status } = player;
+        if (status !== 'idle' && status !== 'moving') {
+            return {};
+        }
         const right = new Vector3(0, 0, -1).applyAxisAngle(new Vector3(0, 1, 0), rotation)
         return {
             player: {
                 ...player,
+                status: 'moving',
                 direction: distance >= 0 ? 'right' : 'left',
                 position: new Vector3(...position).addScaledVector(right, distance).toArray()
-            },
-            constrols: {
-                ...constrols,
-                isMoving: true,
             },
         }
     }),
     rotate: (value: number) => set(({ player }) => {
-        const { rotation } = player;
+        const { rotation, status } = player;
+        if (status !== 'idle' && status !== 'moving') {
+            return {};
+        }
         return {
             player: {
                 ...player,
+                status: 'moving',
                 rotation: rotation + value,
             },
         }
     }),
-    setMoving: (value: boolean) => set(({ constrols }) => {
+    stopMoving: () => set(({ player, }) => {
+        const { status } = player;
+        if (status !== 'moving') {
+            return {};
+        }
         return {
-            constrols: {
-                ...constrols,
-                isMoving: value,
+            player: {
+                ...player,
+                status: 'idle'
             },
         }
     }),
-    resetMove: () => set(({ constrols }) => {
+    idle: () => set(({ player, }) => {
         return {
-            constrols: {
-                ...constrols,
-                isMoving: false,
+            player: {
+                ...player,
+                status: 'idle'
+            },
+        }
+    }),
+    attack: () => set(({ player, weapon }) => {
+        const { status } = player;
+        if (status === 'reloading' || weapon.ammo === 0) {
+            return {};
+        }
+
+        return {
+            player: {
+                ...player,
+                status: 'attack'
+            },
+        }
+    }),
+    aim: (target: Vector3Tuple) => set(({ player: { status }, weapon }) => {
+        if (status === 'attack') {
+            /**
+             * @todo Update direction
+             */
+        }
+        return {
+            weapon: {
+                ...weapon,
+                target,
+            }
+        }
+    }),
+    reload: () => set(({ player }) => {
+        return {};  // not support yet, because don't have animation.
+        return {
+            player: {
+                ...player,
+                status: 'reloading'
+            },
+        }
+    }),
+    reloadDone: () => set(({ player, weapon }) => {
+        return {};  // not support yet, because don't have animation.
+        return {
+            weapon: {
+                ...weapon,
+                reloadable: false,
+                ammo: 44,
+            },
+            player: {
+                ...player,
+                status: 'idle'
             },
         }
     }),

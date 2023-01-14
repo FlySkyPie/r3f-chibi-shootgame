@@ -13,10 +13,8 @@ import { useMouseControls } from './hooks/useMouseControls';
 function App() {
   const { controlsHook, } = useWasdControls();
   const { floorView, floorMesh } = useFloor();
-  const { raycastHook, raycastingPoint } = useRaycast({ floorMesh });
-  const { isPressed, mouseHandlers } = useMouseControls();
-
-  useEffect(() => console.log(isPressed), [isPressed]);
+  const { raycastHook } = useRaycast({ floorMesh });
+  const { mouseHandlers } = useMouseControls();
 
   return (
     <Canvas
@@ -36,8 +34,7 @@ function App() {
 
       <axesHelper args={[100]} position={[0, 1, 0]} />
 
-      <LaserPointer
-        point1={raycastingPoint} />
+      <LaserPointer />
 
       {/* <MapControls /> */}
       {controlsHook}

@@ -23,10 +23,11 @@ type IProps = {
     setIsMoving: React.Dispatch<React.SetStateAction<boolean>>;
     setPosition: React.Dispatch<React.SetStateAction<[number, number, number]>>;
     setRotation: React.Dispatch<React.SetStateAction<number>>;
+    setMoveDirection: React.Dispatch<React.SetStateAction<"right" | "left">>;
 };
 
 const WasdControls: React.FC<IProps> = ({
-    setPosition, setIsMoving, setRotation
+    setPosition, setIsMoving, setRotation, setMoveDirection
 }) => {
     const { camera } = useThree();
     const { codes } = useCodes();
@@ -45,7 +46,12 @@ const WasdControls: React.FC<IProps> = ({
         const right = new Vector3().setFromMatrixColumn(camera.matrix, 0);
 
         setPosition(prev => new Vector3(...prev).addScaledVector(right, distance).toArray())
-    }, [camera, setPosition]);
+        if (distance >= 0) {
+            setMoveDirection('right');
+        } else {
+            setMoveDirection('left');
+        }
+    }, [camera, setPosition, setMoveDirection]);
 
     const rotateCamera = useCallback((diff: number) => {
         setRotation(prev => prev + diff)
@@ -66,7 +72,8 @@ const WasdControls: React.FC<IProps> = ({
         }
 
         if (codes.has('KeyW') || codes.has('KeyA') ||
-            codes.has('KeyS') || codes.has('KeyD')) {
+            codes.has('KeyS') || codes.has('KeyD') ||
+            codes.has('KeyQ') || codes.has('KeyE')) {
             setIsMoving(true);
         } else {
             setIsMoving(false);
@@ -102,18 +109,20 @@ export const useWasdControls = () => {
     const [position, setPosition] = useState<[number, number, number]>(() => [0, 0, 0]);
     const [rotation, setRotation] = useState(0);
     const [isMoving, setIsMoving] = useState(false);
+    const [moveDirection, setMoveDirection] = useState<'right' | 'left'>('right');
 
     const controlsHook = useMemo(() =>
         <>
             <WasdControls
                 setRotation={setRotation}
                 setPosition={setPosition}
-                setIsMoving={setIsMoving} />
+                setIsMoving={setIsMoving}
+                setMoveDirection={setMoveDirection} />
             <CameraSync
                 position={position}
                 rotation={rotation} />
         </>
         , [setPosition, position, rotation]);
 
-    return { controlsHook, position, isMoving };
+    return { controlsHook, position, isMoving, moveDirection };
 }

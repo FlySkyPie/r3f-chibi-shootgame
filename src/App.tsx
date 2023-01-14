@@ -21,7 +21,7 @@ function App() {
         <meshStandardMaterial color={0xffffff} flatShading />
       </mesh>), []);
 
-  const { controlsHook, position, isMoving } = useWasdControls();
+  const { controlsHook, position, isMoving, moveDirection } = useWasdControls();
 
   return (
     <Canvas
@@ -43,6 +43,7 @@ function App() {
 
       <ChibiCharacter
         position={position}
+        moveDirection={moveDirection}
         isMoving={isMoving} />
 
       {/* <mesh
@@ -82,7 +83,7 @@ function App() {
         console.log(objects, cycle);
         return null;
       }} /> */}
-      
+
     </Canvas >
   )
 }

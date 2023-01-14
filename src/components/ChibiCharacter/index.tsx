@@ -10,9 +10,10 @@ import texPng from './lyana/lyana_tex.png';
 type IProps = {
     position: [number, number, number];
     isMoving: boolean;
+    moveDirection: "right" | "left";
 };
 
-export const ChibiCharacter: React.FC<IProps> = ({ position, isMoving }) => {
+export const ChibiCharacter: React.FC<IProps> = ({ position, isMoving, moveDirection }) => {
     const [group, setGroup] = useState<Group | null>(null);
     const texture = useTexture(texPng, (texture) => {
         if (Array.isArray(texture)) {
@@ -48,6 +49,15 @@ export const ChibiCharacter: React.FC<IProps> = ({ position, isMoving }) => {
             armatureDisplay.animation.play("wait", 0);
         }
     }, [armatureDisplay, isMoving])
+
+    useEffect(() => {
+        if (moveDirection === 'right') {
+            armatureDisplay.scale.set(0.1, -0.1, 0.1);
+        } else {
+            armatureDisplay.scale.set(-0.1, -0.1, 0.1);
+        }
+
+    }, [, armatureDisplay, moveDirection,]);
 
     useEffect(() => {
         if (group === null) {

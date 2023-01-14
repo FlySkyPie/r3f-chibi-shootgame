@@ -1,13 +1,17 @@
+import { usePlayerStore } from "@/store/usePlayerStore";
 import { Line } from "@react-three/drei";
 import { useMemo } from "react";
 import { Vector3, Vector3Tuple } from "three";
 
 type IProps = {
-    point0: Vector3Tuple;
     point1: Vector3Tuple;
 };
 
-export const LaserPointer: React.FC<IProps> = ({ point0, point1 }) => {
+export const LaserPointer: React.FC<IProps> = ({  point1 }) => {
+    const {
+        player: { position: point0, },
+    } = usePlayerStore();
+
     const centerPoint = useMemo<Vector3Tuple>(() => [
         point0[0],
         point0[1] + 7.5,

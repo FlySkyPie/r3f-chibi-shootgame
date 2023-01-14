@@ -3,17 +3,17 @@ import { Billboard, useTexture } from '@react-three/drei';
 import { useEffect, useMemo, useState } from 'react';
 import { Group, sRGBEncoding } from 'three';
 
+import { usePlayerStore } from '@/store/usePlayerStore';
+
 import skeJson from './lyana/lyana_ske.json';
 import texJson from './lyana/lyana_tex.json';
 import texPng from './lyana/lyana_tex.png';
 
-type IProps = {
-    position: [number, number, number];
-    isMoving: boolean;
-    moveDirection: "right" | "left";
-};
+export const ChibiCharacter: React.FC = () => {
+    const {
+        player: { position, direction }, constrols: { isMoving }
+    } = usePlayerStore();
 
-export const ChibiCharacter: React.FC<IProps> = ({ position, isMoving, moveDirection }) => {
     const [group, setGroup] = useState<Group | null>(null);
     const texture = useTexture(texPng, (texture) => {
         if (Array.isArray(texture)) {
@@ -51,13 +51,13 @@ export const ChibiCharacter: React.FC<IProps> = ({ position, isMoving, moveDirec
     }, [armatureDisplay, isMoving])
 
     useEffect(() => {
-        if (moveDirection === 'right') {
+        if (direction === 'right') {
             armatureDisplay.scale.set(0.1, -0.1, 0.1);
         } else {
             armatureDisplay.scale.set(-0.1, -0.1, 0.1);
         }
 
-    }, [, armatureDisplay, moveDirection,]);
+    }, [, armatureDisplay, direction,]);
 
     useEffect(() => {
         if (group === null) {

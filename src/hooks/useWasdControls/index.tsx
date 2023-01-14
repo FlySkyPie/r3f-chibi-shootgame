@@ -1,6 +1,8 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useFrame, useThree } from '@react-three/fiber';
 import { Quaternion, Vector3 } from 'three'
+
+import { usePlayerStore } from "@/store/usePlayerStore";
 
 const useCodes = () => {
     const [codes] = useState(() => new Set<string>());
@@ -19,43 +21,9 @@ const useCodes = () => {
     return { codes }
 }
 
-type IProps = {
-    setIsMoving: React.Dispatch<React.SetStateAction<boolean>>;
-    setPosition: React.Dispatch<React.SetStateAction<[number, number, number]>>;
-    setRotation: React.Dispatch<React.SetStateAction<number>>;
-    setMoveDirection: React.Dispatch<React.SetStateAction<"right" | "left">>;
-};
-
-const WasdControls: React.FC<IProps> = ({
-    setPosition, setIsMoving, setRotation, setMoveDirection
-}) => {
-    const { camera } = useThree();
+const WasdControls: React.FC = () => {
+    const { moveRelativeY, moveRelativeX, rotate, setMoving, resetMove } = usePlayerStore();
     const { codes } = useCodes();
-
-    const moveRelativeY = useCallback((distance: number) => {
-        const right = new Vector3().setFromMatrixColumn(camera.matrix, 0);
-        right.crossVectors(camera.up, right);
-
-        const forward = right.clone().setY(0).normalize();
-
-        setPosition(prev => new Vector3(...prev).addScaledVector(forward, distance).toArray())
-
-    }, [camera, setPosition]);
-
-    const moveRelativeX = useCallback((distance: number) => {
-        const right = new Vector3().setFromMatrixColumn(camera.matrix, 0);
-
-        setPosition(prev => new Vector3(...prev).addScaledVector(right, distance).toArray())
-        if (distance >= 0) {
-            setMoveDirection('right');
-        } else {
-            setMoveDirection('left');
-        }
-    }, [camera, setPosition, setMoveDirection]);
-
-    const rotateCamera = useCallback((diff: number) => {
-        setRotation(prev => prev + diff)
-    }, [setRotation]);
 
     useFrame((_, delta) => {
         const speed = codes.has('ShiftLeft') ? 50 : 20
@@ -65,36 +33,32 @@ const WasdControls: React.FC<IProps> = ({
         if (codes.has('KeyD')) moveRelativeX(delta * speed)
 
         if (codes.has('KeyQ')) {
-            rotateCamera(0.03);
+            rotate(0.03);
         }
         if (codes.has('KeyE')) {
-            rotateCamera(-0.03);
+            rotate(-0.03);
         }
 
-        if (codes.has('KeyW') || codes.has('KeyA') ||
-            codes.has('KeyS') || codes.has('KeyD') ||
-            codes.has('KeyQ') || codes.has('KeyE')) {
-            setIsMoving(true);
+        if (!codes.has('KeyW') && !codes.has('KeyA') &&
+            !codes.has('KeyS') && !codes.has('KeyD') &&
+            !codes.has('KeyQ') && !codes.has('KeyE')) {
+                resetMove();
         } else {
-            setIsMoving(false);
+            
         }
     })
     return null
 }
 
-type ICameraSync = {
-    position: [number, number, number];
-    rotation: number;
-};
-
-const CameraSync: React.FC<ICameraSync> = ({ position, rotation }) => {
+const CameraSync: React.FC = () => {
+    const { player: { position, rotation } } = usePlayerStore();
     const { camera } = useThree();
 
     useFrame((_, delta) => {
         const quaternion = new Quaternion();
         quaternion.setFromAxisAngle(new Vector3(0, 1, 0), rotation);
 
-        const pos = new Vector3(40, 40, 40);
+        const pos = new Vector3(40, 40, 0);
         pos.applyQuaternion(quaternion);
         pos.add(new Vector3(...position));
 
@@ -106,23 +70,11 @@ const CameraSync: React.FC<ICameraSync> = ({ position, rotation }) => {
 }
 
 export const useWasdControls = () => {
-    const [position, setPosition] = useState<[number, number, number]>(() => [0, 0, 0]);
-    const [rotation, setRotation] = useState(0);
-    const [isMoving, setIsMoving] = useState(false);
-    const [moveDirection, setMoveDirection] = useState<'right' | 'left'>('right');
-
     const controlsHook = useMemo(() =>
         <>
-            <WasdControls
-                setRotation={setRotation}
-                setPosition={setPosition}
-                setIsMoving={setIsMoving}
-                setMoveDirection={setMoveDirection} />
-            <CameraSync
-                position={position}
-                rotation={rotation} />
-        </>
-        , [setPosition, position, rotation]);
+            <WasdControls />
+            <CameraSync />
+        </>, []);
 
-    return { controlsHook, position, isMoving, moveDirection };
+    return { controlsHook };
 }

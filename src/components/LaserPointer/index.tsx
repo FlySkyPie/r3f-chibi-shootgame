@@ -1,9 +1,11 @@
 import { usePlayerStore } from "@/store/usePlayerStore";
-import { Line } from "@react-three/drei";
+import { Line, useTexture } from "@react-three/drei";
 import { useMemo } from "react";
 import { Vector3, Vector3Tuple } from "three";
 
-export const LaserPointer: React.FC = ({  }) => {
+import crosshairTexUrl from './assets/crosshair.png';
+
+export const LaserPointer: React.FC = ({ }) => {
     const {
         player: { position: point0, },
         weapon: { target: point1 }
@@ -21,6 +23,8 @@ export const LaserPointer: React.FC = ({  }) => {
         return new Vector3(...centerPoint).add(direction.multiplyScalar(7.0)).toArray();
     }, [centerPoint, point1]);
 
+    const texture = useTexture(crosshairTexUrl)
+
     return (
         <>
             <Line
@@ -32,6 +36,18 @@ export const LaserPointer: React.FC = ({  }) => {
                 <sphereGeometry args={[0.5, 12, 12]} />
                 <meshStandardMaterial color={0xff0000} />
             </mesh>
+            <group position={point1}>
+                <mesh
+                    position={[0, 0.1, 0]}
+                    rotation={[-Math.PI * 0.5, 0, 0]} >
+                    <planeGeometry args={[10, 10]} />
+                    <meshStandardMaterial
+                        transparent
+                        map={texture}
+                        depthTest={false}
+                    />
+                </mesh>
+            </group>
         </>
     );
 }

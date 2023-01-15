@@ -1,7 +1,7 @@
 import { usePlayerStore } from "@/store/usePlayerStore";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useState } from "react";
-import { Mesh, Raycaster, Vector2, Vector3Tuple } from "three";
+import { Mesh, Raycaster, Vector2, Vector3, Vector3Tuple } from "three";
 
 type IRayCastHookProps = {
     floorMesh: Mesh | null;
@@ -9,7 +9,7 @@ type IRayCastHookProps = {
 };
 
 const RaycastHook: React.FC<IRayCastHookProps> = ({ floorMesh }) => {
-    const { aim } = usePlayerStore();
+    const { player: { position, rotation }, aim } = usePlayerStore();
     const { camera, gl } = useThree();
     const [pointer, setPointer] = useState<[number, number]>([0, 0]);
     const [raycaster] = useState(() => new Raycaster());
@@ -23,7 +23,9 @@ const RaycastHook: React.FC<IRayCastHookProps> = ({ floorMesh }) => {
         const intersects = raycaster.intersectObject(floorMesh);
 
         if (intersects.length > 0) {
-            aim(intersects[0].point.toArray());
+            const point = intersects[0].point;
+
+            aim(point.toArray());
         }
     })
 

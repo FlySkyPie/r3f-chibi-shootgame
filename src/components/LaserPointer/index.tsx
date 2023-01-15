@@ -4,11 +4,12 @@ import { useMemo } from "react";
 import { Vector3, Vector3Tuple } from "three";
 
 import crosshairTexUrl from './assets/crosshair.png';
+import crosshairGraysacleTexUrl from './assets/crosshair_grayscale.png';
 
 export const LaserPointer: React.FC = ({ }) => {
     const {
         player: { position: point0, },
-        weapon: { target: point1 }
+        weapon: { target: point1, validTarget }
     } = usePlayerStore();
 
     const centerPoint = useMemo<Vector3Tuple>(() => [
@@ -23,18 +24,22 @@ export const LaserPointer: React.FC = ({ }) => {
         return new Vector3(...centerPoint).add(direction.multiplyScalar(7.0)).toArray();
     }, [centerPoint, point1]);
 
-    const texture = useTexture(crosshairTexUrl)
+    const texture = useTexture(crosshairTexUrl);
+    const textureGraysacle = useTexture(crosshairGraysacleTexUrl);
+    const color = useMemo(() => validTarget ? 0xff0000 : 0xeeeeee, [validTarget]);
 
     return (
         <>
             <Line
                 points={[muzzlePoint, point1]}
-                color="red"
+                color={color}
                 lineWidth={2}
             />
             <mesh position={point1}>
                 <sphereGeometry args={[0.5, 12, 12]} />
-                <meshStandardMaterial color={0xff0000} />
+                <meshStandardMaterial
+                    color={color}
+                    emissive={validTarget ? 0xff6a6a : 0xeeeeee} />
             </mesh>
             <group position={point1}>
                 <mesh
@@ -43,7 +48,7 @@ export const LaserPointer: React.FC = ({ }) => {
                     <planeGeometry args={[10, 10]} />
                     <meshStandardMaterial
                         transparent
-                        map={texture}
+                        map={validTarget ? texture : textureGraysacle}
                         depthTest={false}
                     />
                 </mesh>

@@ -11,6 +11,7 @@ interface IPlayerStore {
     weapon: {
         reloadable: boolean;
         ammo: number;
+        validTarget: boolean;
         target: Vector3Tuple;
     };
     constrols: {
@@ -42,6 +43,7 @@ export const usePlayerStore = create<IPlayerStore>((set) => ({
     weapon: {
         reloadable: false,
         ammo: 64,
+        validTarget: true,
         target: [0, 0, 0],
     },
     constrols: {
@@ -114,6 +116,7 @@ export const usePlayerStore = create<IPlayerStore>((set) => ({
         if (status === 'reloading' || weapon.ammo === 0) {
             return {};
         }
+
         let direction = prevDirection;
         if (status === 'attack') {
             const right = new Vector3(0, 0, -1).applyAxisAngle(new Vector3(0, 1, 0), rotation);
@@ -136,6 +139,21 @@ export const usePlayerStore = create<IPlayerStore>((set) => ({
     }),
     aim: (target: Vector3Tuple) => set(({ player, weapon }) => {
         const { position, status, rotation, direction: prevDirection } = player;
+
+        const cameraDir = new Vector3(1, 0, 0).applyAxisAngle(new Vector3(0, 1, 0), rotation);
+        const relativeTarget = new Vector3(...target).sub(new Vector3(...position));
+        const angle = cameraDir.angleTo(relativeTarget);
+        const validTarget = Math.PI / 12.0 * 5 <= angle && angle <= Math.PI / 12.0 * 7;
+
+        if (status === 'attack' && !weapon.validTarget) {
+            return {
+                player: {
+                    ...player,
+                    status: 'idle'
+                },
+            };
+        }
+
         let direction = prevDirection;
         if (status === 'attack') {
             const right = new Vector3(0, 0, -1).applyAxisAngle(new Vector3(0, 1, 0), rotation);
@@ -154,6 +172,7 @@ export const usePlayerStore = create<IPlayerStore>((set) => ({
             },
             weapon: {
                 ...weapon,
+                validTarget,
                 target,
             }
         }

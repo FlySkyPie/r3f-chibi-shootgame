@@ -52,7 +52,7 @@ export const ChibiCharacter: React.FC = () => {
     }, [, armatureDisplay, direction,]);
 
     useEffect(() => {
-        console.log(status)
+        // console.log(status)
         if (status === 'moving') {
             armatureDisplay.animation.play("move", 0);
         }

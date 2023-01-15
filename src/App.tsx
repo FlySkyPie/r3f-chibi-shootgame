@@ -12,6 +12,7 @@ import { LaserPointer } from './components/LaserPointer';
 import { useMouseControls } from './hooks/useMouseControls';
 import { Bullets } from './components/Bullets';
 import bgmUrl from './assets/battle-of-the-dragons-8037.mp3?url';
+import { CreditPage } from './components/CreditPage';
 
 const bgmHowl = new Howl({
   volume: 0.5,
@@ -28,31 +29,35 @@ function App() {
   const { mouseHandlers } = useMouseControls();
 
   return (
-    <Canvas
-      gl={{ antialias: true, }}
-      camera={{ position: [40, 40, 40], far: 10000, near: 1 }}
-      {...mouseHandlers}>
-      <color attach="background" args={[0x69655b]} />
-      <directionalLight args={[0xffffff]} position={[1, 1, 1]} />
-      <directionalLight args={[0x002288]} position={[-1, -1, -1]} />
-      <ambientLight args={[0x222222]} />
-      <fogExp2 attach="fog" args={[0xcccccc, 0.005]} />
+    <>
+      <Canvas
+        gl={{ antialias: true, }}
+        camera={{ position: [40, 40, 40], far: 10000, near: 1 }}
+        {...mouseHandlers}>
+        <color attach="background" args={[0x69655b]} />
+        <directionalLight args={[0xffffff]} position={[1, 1, 1]} />
+        <directionalLight args={[0x002288]} position={[-1, -1, -1]} />
+        <ambientLight args={[0x222222]} />
+        <fogExp2 attach="fog" args={[0xcccccc, 0.005]} />
 
-      {floorView}
-      <RandomPyramids />
+        {floorView}
+        <RandomPyramids />
 
-      <ChibiCharacter />
-      <Bullets />
+        <ChibiCharacter />
+        <Bullets />
 
-      {/* <axesHelper args={[100]} position={[0, 1, 0]} /> */}
+        {/* <axesHelper args={[100]} position={[0, 1, 0]} /> */}
 
-      <LaserPointer />
+        <LaserPointer />
 
-      {/* <MapControls /> */}
-      {controlsHook}
-      {raycastHook}
-      <DragonBonesTicker />
-    </Canvas >
+        {/* <MapControls /> */}
+        {controlsHook}
+        {raycastHook}
+        <DragonBonesTicker />
+      </Canvas >
+      <CreditPage />
+    </>
+
   )
 }
 

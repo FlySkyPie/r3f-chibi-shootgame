@@ -1,0 +1,156 @@
+.credit-page {
+  position: absolute;
+  top     : 0;
+  left    : 0;
+  width   : 100vw;
+  height  : 100vh;
+  z-index : 20;
+
+  display        : flex;
+  flex-direction : column;
+  justify-content: center;
+  align-items    : center;
+
+  color: #ffffff;
+
+
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.credit {
+  position: absolute;
+  right   : 0;
+  bottom  : 0;
+  padding : 16px;
+}
+
+.credit-page.hide {
+  display: none;
+}
+
+.credit-page p {
+  margin: 8px;
+}
+
+.credit-page h3 {
+  margin: 2px;
+}
+
+input.start {
+  width        : 300px;
+  height       : 60px;
+  border-radius: 20px;
+  cursor       : pointer;
+  font-size    : 2rem;
+}
+
+.description {
+  padding   : 16px;
+  min-height: 50px;
+}
+
+.controls {
+  display       : flex;
+  flex-direction: row;
+  align-items   : center;
+  gap           : 16px;
+}
+
+.mouse-svg {
+  transform: scale(0.7);
+}
+
+.mouse-svg .disable {
+  pointer-events: none;
+  fill          : #777777;
+}
+
+.mouse-svg path {
+  fill: #aaaaaa;
+}
+
+.mouse-svg path:hover {
+  fill: #ffffff;
+}
+
+.keyboard-base {
+  color: #000000;
+
+  max-width: 1085px;
+  padding  : 20px;
+
+
+  background-color     : rgb(197, 197, 197);
+  border-radius        : 10px;
+  display              : grid;
+  grid-template-columns: repeat(30, 30px);
+  grid-template-rows   : repeat(5, 60px);
+  grid-gap             : 5px;
+
+  user-select: none;
+}
+
+
+.key {
+  background-color: rgb(243, 243, 243);
+  border          : 2px solid black;
+  border-radius   : 5px;
+  grid-column     : span 2;
+  font-size       : 20px;
+  text-align      : center;
+  padding-top     : 17px;
+
+  pointer-events: none;
+  color         : rgba(0, 0, 0, 0.298);
+}
+
+.key.active {
+  pointer-events: unset;
+  color         : #000000;
+}
+
+.key:hover {
+  border: 1px solid #eeeeee;
+
+}
+
+.delete {
+  grid-column: span 4;
+}
+
+.tab {
+  grid-column: span 3;
+}
+
+.backslash {
+  grid-column: span 3;
+}
+
+.capslock {
+  grid-column: span 4;
+}
+
+.return {
+  grid-column: span 4;
+}
+
+.leftshift {
+  grid-column: span 5;
+}
+
+.rightshift {
+  grid-column: span 5;
+}
+
+.leftctrl {
+  grid-column: span 3;
+}
+
+.command {
+  grid-column: span 3;
+  font-size  : 14px;
+}
+
+.space {
+  grid-column: span 13;
+}

@@ -1,9 +1,17 @@
 import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
+import { Vector3, Vector3Tuple } from "three";
+import { Howl } from 'howler';
 
 import { useBulletStore } from "@/store/useBulletStore";
 import { usePlayerStore } from "@/store/usePlayerStore";
-import { Vector3, Vector3Tuple } from "three";
+
+import sfxUrl from './assets/smg_shoot.mp3?url';
+
+const fireSFX = new Howl({
+    volume: 0.5,
+    src: sfxUrl
+});
 
 export const Bullets: React.FC = () => {
     const {
@@ -14,7 +22,7 @@ export const Bullets: React.FC = () => {
 
     const centerPoint = useMemo<Vector3Tuple>(() => [
         position[0],
-        position[1] + 7.5,
+        position[1] + 8.0,
         position[2],
     ], [position]);
 
@@ -46,6 +54,7 @@ export const Bullets: React.FC = () => {
                 .toArray();
 
             add(muzzlePoint, messedirection);
+            fireSFX.play();
         }
     })
 

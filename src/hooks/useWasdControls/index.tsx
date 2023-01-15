@@ -26,7 +26,7 @@ const WasdControls: React.FC = () => {
     const { codes } = useCodes();
 
     useFrame((_, delta) => {
-        const speed = codes.has('ShiftLeft') ? 50 : 20
+        const speed = codes.has('ShiftLeft') ? 55 : 35
         if (codes.has('KeyW')) moveRelativeY(delta * speed)
         if (codes.has('KeyA')) moveRelativeX(-delta * speed)
         if (codes.has('KeyS')) moveRelativeY(-delta * speed)
@@ -58,7 +58,7 @@ const CameraSync: React.FC = () => {
         const quaternion = new Quaternion();
         quaternion.setFromAxisAngle(new Vector3(0, 1, 0), rotation);
 
-        const pos = new Vector3(50, 50, 0);
+        const pos = new Vector3(40, 40, 0);
         pos.applyQuaternion(quaternion);
         pos.add(new Vector3(...position));
 

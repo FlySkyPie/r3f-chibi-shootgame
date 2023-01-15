@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { Canvas, } from '@react-three/fiber'
+import { Howl } from 'howler';
 
 import { ChibiCharacter } from './components/ChibiCharacter';
 import { DragonBonesTicker } from './components/DragonBonesTicker';
@@ -10,6 +11,15 @@ import { useRaycast } from './hooks/useRaycast';
 import { LaserPointer } from './components/LaserPointer';
 import { useMouseControls } from './hooks/useMouseControls';
 import { Bullets } from './components/Bullets';
+import bgmUrl from './assets/battle-of-the-dragons-8037.mp3?url';
+
+const bgmHowl = new Howl({
+  volume: 0.5,
+  src: bgmUrl,
+  loop: true,
+});
+
+bgmHowl.play()
 
 function App() {
   const { controlsHook, } = useWasdControls();

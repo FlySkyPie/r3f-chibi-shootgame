@@ -15,7 +15,11 @@ type IProps = {
 };
 
 export const useWeapon = ({ characterPosition, targetPosition }: IProps) => {
-    const { player: { status }, weapon: { reloadable }, reload, reloadDone } = usePlayerStore();
+    const {
+        player: { status, position },
+        weapon: { reloadable, target },
+        reload, reloadDone
+    } = usePlayerStore();
     //const [isFiring, setIsFire] = useState(false);
     const [isReloading, setIsReloading] = useState(false);
     const [ammo, setAmmo] = useState(44);

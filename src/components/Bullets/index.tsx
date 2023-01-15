@@ -1,0 +1,61 @@
+import { useFrame } from "@react-three/fiber";
+import { useMemo, useRef } from "react";
+
+import { useBulletStore } from "@/store/useBulletStore";
+import { usePlayerStore } from "@/store/usePlayerStore";
+import { Vector3, Vector3Tuple } from "three";
+
+export const Bullets: React.FC = () => {
+    const {
+        player: { position, status, rotation },
+        weapon: { target }
+    } = usePlayerStore();
+    const { bullets, tick, add } = useBulletStore();
+
+    const centerPoint = useMemo<Vector3Tuple>(() => [
+        position[0],
+        position[1] + 7.5,
+        position[2],
+    ], [position]);
+
+    const { direction, muzzlePoint } = useMemo(() => {
+        const direction = new Vector3(...target).sub(new Vector3(...position)).normalize();
+        const muzzlePoint = new Vector3(...centerPoint).add(direction.multiplyScalar(9.0)).toArray();
+        return { direction, muzzlePoint };
+    }, [centerPoint, target]);
+
+    const cooldownRef = useRef(0);
+    useFrame((_, delta) => {
+        tick(delta);
+
+        if (status !== 'attack') {
+            return;
+        }
+
+        cooldownRef.current += delta;
+        if (cooldownRef.current >= 0.1) {
+            cooldownRef.current -= 0.1;
+            const errorMax = 1;
+            const errorX = (Math.random() * 2 - 1) * errorMax;
+            // const errorY = (Math.random() * 2 - 1) * errorMax;
+            const forward = new Vector3(-1, 0, 0).applyAxisAngle(new Vector3(0, 1, 0), rotation);
+            // const up = new Vector3(0, 1, 0);
+            const messedirection = direction
+                .add(forward.multiplyScalar(errorX))
+                // .add(up.multiplyScalar(errorY))
+                .toArray();
+
+            add(muzzlePoint, messedirection);
+        }
+    })
+
+    const bulletsView = useMemo(() => bullets.map(({ id, position }) =>
+        <mesh
+            key={id}
+            position={position}>
+            <sphereGeometry args={[0.5, 12, 12]} />
+            <meshStandardMaterial color={0xff9000} emissive={0xffba60} />
+        </mesh>), [bullets]);
+
+    return <>{bulletsView}</>;
+}

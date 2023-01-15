@@ -41,7 +41,7 @@ export const usePlayerStore = create<IPlayerStore>((set) => ({
     },
     weapon: {
         reloadable: false,
-        ammo: 44,
+        ammo: 64,
         target: [0, 0, 0],
     },
     constrols: {
@@ -173,7 +173,7 @@ export const usePlayerStore = create<IPlayerStore>((set) => ({
             weapon: {
                 ...weapon,
                 reloadable: false,
-                ammo: 44,
+                ammo: 64,
             },
             player: {
                 ...player,

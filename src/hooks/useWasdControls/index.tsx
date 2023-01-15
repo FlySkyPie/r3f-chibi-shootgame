@@ -58,7 +58,7 @@ const CameraSync: React.FC = () => {
         const quaternion = new Quaternion();
         quaternion.setFromAxisAngle(new Vector3(0, 1, 0), rotation);
 
-        const pos = new Vector3(40, 40, 0);
+        const pos = new Vector3(50, 50, 0);
         pos.applyQuaternion(quaternion);
         pos.add(new Vector3(...position));
 

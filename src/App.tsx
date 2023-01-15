@@ -9,6 +9,7 @@ import { useFloor } from './hooks/useFloor';
 import { useRaycast } from './hooks/useRaycast';
 import { LaserPointer } from './components/LaserPointer';
 import { useMouseControls } from './hooks/useMouseControls';
+import { Bullets } from './components/Bullets';
 
 function App() {
   const { controlsHook, } = useWasdControls();
@@ -31,6 +32,7 @@ function App() {
       <RandomPyramids />
 
       <ChibiCharacter />
+      <Bullets />
 
       {/* <axesHelper args={[100]} position={[0, 1, 0]} /> */}
 

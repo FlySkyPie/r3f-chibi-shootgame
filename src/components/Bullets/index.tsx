@@ -28,7 +28,7 @@ export const Bullets: React.FC = () => {
 
     const { direction, muzzlePoint } = useMemo(() => {
         const direction = new Vector3(...target).sub(new Vector3(...position)).normalize();
-        const muzzlePoint = new Vector3(...centerPoint).add(direction.multiplyScalar(9.0)).toArray();
+        const muzzlePoint = new Vector3(...centerPoint).add(direction.multiplyScalar(10.0)).toArray();
         return { direction, muzzlePoint };
     }, [centerPoint, target]);
 

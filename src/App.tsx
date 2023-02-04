@@ -1,28 +1,20 @@
 import React, { useEffect } from 'react'
 import { Canvas, } from '@react-three/fiber'
-import { Howl } from 'howler';
 
 import { ChibiCharacter } from './components/ChibiCharacter';
 import { DragonBonesTicker } from './components/DragonBonesTicker';
-import { useWasdControls } from './hooks/useWasdControls';
 import { RandomPyramids } from './components/RandomPyramids';
+import { useWasdControls } from './hooks/useWasdControls';
 import { useFloor } from './hooks/useFloor';
 import { useRaycast } from './hooks/useRaycast';
-import { LaserPointer } from './components/LaserPointer';
+import { useBGM } from './hooks/useBGM';
 import { useMouseControls } from './hooks/useMouseControls';
+import { LaserPointer } from './components/LaserPointer';
 import { Bullets } from './components/Bullets';
-import bgmUrl from './assets/battle-of-the-dragons-8037.mp3?url';
 import { CreditPage } from './components/CreditPage';
 
-const bgmHowl = new Howl({
-  volume: 0.5,
-  src: bgmUrl,
-  loop: true,
-});
-
-bgmHowl.play()
-
 function App() {
+  useBGM();
   const { controlsHook, } = useWasdControls();
   const { floorView, floorMesh } = useFloor();
   const { raycastHook } = useRaycast({ floorMesh });

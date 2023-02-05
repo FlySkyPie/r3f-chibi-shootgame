@@ -35,6 +35,8 @@ export const ChibiCharacter: React.FC = () => {
             throw new Error('');
         }
 
+        
+
         armatureDisplay.scale.set(0.1, -0.1, 0.1);
         armatureDisplay.translateY(1);
         armatureDisplay.animation.play("attack", 0);

@@ -11,8 +11,11 @@ import {
 } from './components';
 
 
+
+import { MinimapHud } from './components/MinimapHud';
+
 function App() {
-  useBGM();
+  // useBGM();
   const { controlsHook, } = useWasdControls();
   const { floorView, floorMesh } = useFloor();
   const { raycastHook } = useRaycast({ floorMesh });
@@ -39,6 +42,8 @@ function App() {
         {/* <axesHelper args={[100]} position={[0, 1, 0]} /> */}
 
         <LaserPointer />
+
+        <MinimapHud />
 
         {/* <MapControls /> */}
         {controlsHook}

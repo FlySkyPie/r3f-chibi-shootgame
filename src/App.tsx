@@ -1,17 +1,15 @@
 import React, { useEffect } from 'react'
 import { Canvas, } from '@react-three/fiber'
 
-import { ChibiCharacter } from './components/ChibiCharacter';
-import { DragonBonesTicker } from './components/DragonBonesTicker';
-import { RandomPyramids } from './components/RandomPyramids';
-import { useWasdControls } from './hooks/useWasdControls';
-import { useFloor } from './hooks/useFloor';
-import { useRaycast } from './hooks/useRaycast';
-import { useBGM } from './hooks/useBGM';
-import { useMouseControls } from './hooks/useMouseControls';
-import { LaserPointer } from './components/LaserPointer';
-import { Bullets } from './components/Bullets';
-import { CreditPage } from './components/CreditPage';
+import {
+  useWasdControls, useFloor, useRaycast, useMouseControls,
+  useBGM
+} from './hooks';
+import {
+  Bullets, LaserPointer, RandomPyramids, DragonBonesTicker, ChibiCharacter,
+  CreditPage
+} from './components';
+
 
 function App() {
   useBGM();

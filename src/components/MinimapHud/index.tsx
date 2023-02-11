@@ -1,5 +1,5 @@
-import { useMemo, useRef, } from 'react';
-import { Group, Matrix4, Vector3Tuple } from 'three';
+import { useMemo, useState, } from 'react';
+import { Euler, Vector3Tuple } from 'three';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Grid, OrthographicCamera, } from '@react-three/drei';
 
@@ -11,18 +11,18 @@ import { RandomPyramids } from '../RandomPyramids';
 
 import { LeftBottomDisplay } from './components/LeftBottomDisplay';
 
-export const MinimapHud = ({ renderPriority = 1, matrix = new Matrix4() }) => {
+export const MinimapHud = ({ renderPriority = 1, }) => {
     const { player: { position } } = usePlayerStore();
     const { bullets, } = useBulletStore();
     const { enemies } = useEnemyStore();
 
-    const miniatureRef = useRef<Group>(null);
     const { camera, } = useThree();
 
+    const [rotation, setRoration] = useState<Parameters<THREE.Euler['set']>>([0, 0, 0])
     useFrame(() => {
         // Spin mesh to the inverse of the default cameras matrix
-        matrix.copy(camera.matrix).invert()
-        miniatureRef.current?.quaternion.setFromRotationMatrix(matrix);
+        const r = new Euler().setFromRotationMatrix(camera.matrix.clone().invert());
+        setRoration(r.toArray() as Parameters<THREE.Euler['set']>);
     })
 
     const miniatureTranslat: Vector3Tuple = useMemo(() => [
@@ -51,42 +51,60 @@ export const MinimapHud = ({ renderPriority = 1, matrix = new Matrix4() }) => {
         <LeftBottomDisplay
             cameraName="minimap-camera"
             renderPriority={renderPriority}>
-            <OrthographicCamera makeDefault name="minimap-camera" position={[0, 0, 1000]} />
+            <OrthographicCamera
+                name="minimap-camera"
+                makeDefault
+                position={[0, 0, 1000]}
+                left={-500}
+                right={500}
+                top={500}
+                bottom={-500}
+            />
             <group >
-                <mesh >
-                    <sphereGeometry args={[20, 12, 12]} />
-                    <meshBasicMaterial
-                        color={0x0000ff} />
-                </mesh>
-                <group ref={miniatureRef} >
+                <group rotation={rotation} position={[0, 0, -100]} >
                     <group position={miniatureTranslat}>
-                        <directionalLight args={[0xffffff]} position={[1, 1, 1]} />
-                        <directionalLight args={[0x002288]} position={[-1, -1, -1]} />
-
+                        <mesh
+                            rotation={[-Math.PI * 0.5, 0, 0]} >
+                            <planeGeometry args={[2000, 2000]} />
+                            <meshBasicMaterial color={0xcdc6b1} />
+                        </mesh>
+                    </group>
+                </group>
+                <group rotation={rotation} >
+                    <directionalLight args={[0xffffff]} position={[1, 1, 1]} />
+                    <directionalLight args={[0x002288]} position={[-1, -1, -1]} />
+                    <ambientLight args={[0x222222]} />
+                    <group position={miniatureTranslat}>
                         <axesHelper args={[100]} position={[0, 1, 0]} />
                         <RandomPyramids />
-                        {enemiesView}
-                        {bulletsView}
 
                         <Grid
                             position={[0, 0.05, 0]}
-                            args={[100, 100]}
-                            cellSize={10}
-                            cellThickness={1.5}
-                            cellColor='#6f6f6f'
+                            args={[2000, 2000]}
+                            // cellSize={10}
+                            // cellThickness={1.5}
+                            // cellColor='#6f6f6f'
 
                             sectionSize={100}
                             sectionThickness={1.5}
                             sectionColor='#9d4b4b'
-                            fadeDistance={99999}
+                            fadeDistance={5000}
                             fadeStrength={0}
-                            infiniteGrid
-
-                        >
-                            <meshPhongMaterial color="#33BBFF" />
-                        </Grid>
+                        // infiniteGrid
+                        />
                     </group>
                 </group>
+                <group rotation={rotation} position={[0, 0, 100]} >
+                    <group position={miniatureTranslat}>
+                        {enemiesView}
+                        {bulletsView}
+                    </group>
+                </group>
+                <mesh position={[0, 0, 200]}>
+                    <sphereGeometry args={[20, 12, 12]} />
+                    <meshBasicMaterial
+                        color={0x0000ff} />
+                </mesh>
             </group>
         </LeftBottomDisplay>
     );

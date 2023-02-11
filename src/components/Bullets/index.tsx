@@ -53,7 +53,7 @@ export const Bullets: React.FC = () => {
                 // .add(up.multiplyScalar(errorY))
                 .toArray();
 
-            add(muzzlePoint, messedirection);
+            add(muzzlePoint, messedirection, 'player');
             fireSFX.play();
         }
     })

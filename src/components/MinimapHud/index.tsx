@@ -4,17 +4,18 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { Grid, OrthographicCamera, } from '@react-three/drei';
 
 import { usePlayerStore } from '@/store/usePlayerStore';
+import { useBulletStore } from '@/store/useBulletStore';
+import { useEnemyStore } from '@/store/useEnemyStore';
 
 import { RandomPyramids } from '../RandomPyramids';
 
 import { LeftBottomDisplay } from './components/LeftBottomDisplay';
-import { useBulletStore } from '@/store/useBulletStore';
 
 export const MinimapHud = ({ renderPriority = 1, matrix = new Matrix4() }) => {
-    const {
-        player: { position, },
-    } = usePlayerStore();
+    const { player: { position } } = usePlayerStore();
     const { bullets, } = useBulletStore();
+    const { enemies } = useEnemyStore();
+
     const miniatureRef = useRef<Group>(null);
     const { camera, } = useThree();
 
@@ -35,8 +36,16 @@ export const MinimapHud = ({ renderPriority = 1, matrix = new Matrix4() }) => {
             key={id}
             position={position}>
             <sphereGeometry args={[10, 12, 12]} />
-            <meshStandardMaterial color={0xff9000} emissive={0xffba60} />
+            <meshBasicMaterial color={0xeec591} />
         </mesh>), [bullets]);
+
+    const enemiesView = useMemo(() => enemies.map(({ id, position }) =>
+        <mesh
+            key={id}
+            position={position}>
+            <sphereGeometry args={[20, 12, 12]} />
+            <meshBasicMaterial color={0xff0000} />
+        </mesh>), [enemies]);
 
     return (
         <LeftBottomDisplay
@@ -56,6 +65,7 @@ export const MinimapHud = ({ renderPriority = 1, matrix = new Matrix4() }) => {
 
                         <axesHelper args={[100]} position={[0, 1, 0]} />
                         <RandomPyramids />
+                        {enemiesView}
                         {bulletsView}
 
                         <Grid

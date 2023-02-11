@@ -10,9 +10,8 @@ import {
   CreditPage
 } from './components';
 
-
-
 import { MinimapHud } from './components/MinimapHud';
+import { Enemies } from './components/Enemies';
 
 function App() {
   // useBGM();
@@ -38,6 +37,8 @@ function App() {
 
         <ChibiCharacter />
         <Bullets />
+        <Enemies />
+
 
         {/* <axesHelper args={[100]} position={[0, 1, 0]} /> */}
 

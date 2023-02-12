@@ -54,12 +54,17 @@ export const usePlayerStore = create<IPlayerStore>((set) => ({
         if (status !== 'idle' && status !== 'moving') {
             return {};
         }
-        const forward = new Vector3(-1, 0, 0).applyAxisAngle(new Vector3(0, 1, 0), rotation)
+        const forward = new Vector3(-1, 0, 0).applyAxisAngle(new Vector3(0, 1, 0), rotation);
+        const newPosition = new Vector3(...position).addScaledVector(forward, distance).toArray();
+        if (newPosition[0] < -1000 || newPosition[0] > 1000 ||
+            newPosition[2] < -1000 || newPosition[2] > 1000) {
+            return { player: { ...player, status: 'moving' } };
+        }
         return {
             player: {
                 ...player,
                 status: 'moving',
-                position: new Vector3(...position).addScaledVector(forward, distance).toArray()
+                position: newPosition,
             },
         }
     }),
@@ -69,12 +74,17 @@ export const usePlayerStore = create<IPlayerStore>((set) => ({
             return {};
         }
         const right = new Vector3(0, 0, -1).applyAxisAngle(new Vector3(0, 1, 0), rotation)
+        const newPosition = new Vector3(...position).addScaledVector(right, distance).toArray();
+        if (newPosition[0] < -1000 || newPosition[0] > 1000 ||
+            newPosition[2] < -1000 || newPosition[2] > 1000) {
+            return { player: { ...player, status: 'moving' } };
+        }
         return {
             player: {
                 ...player,
                 status: 'moving',
                 direction: distance >= 0 ? 'right' : 'left',
-                position: new Vector3(...position).addScaledVector(right, distance).toArray()
+                position: newPosition,
             },
         }
     }),

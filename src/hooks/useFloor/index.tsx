@@ -18,7 +18,7 @@ export const useFloor = () => {
             {floorMeshView}
             <Grid
                 position={[0, 0.05, 0]}
-                args={[100, 100]}
+                args={[2000, 2000]}
                 cellSize={10}
                 cellThickness={1.5}
                 cellColor='#6f6f6f'
@@ -26,8 +26,9 @@ export const useFloor = () => {
                 sectionSize={100}
                 sectionThickness={1.5}
                 sectionColor='#9d4b4b'
-                fadeDistance={1000}
-                infiniteGrid
+                fadeDistance={5000}
+                fadeStrength={0}
+            // infiniteGrid
             />
         </>, [floorMeshView]);
 

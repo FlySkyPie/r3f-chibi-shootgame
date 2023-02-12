@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Vector3Tuple } from "three";
 
 const randPositions = Array.from({ length: 500 }, () =>
-    ([Math.random() * 3200 - 1600, 15, Math.random() * 3200 - 1600] as Vector3Tuple))
+    ([Math.random() * 2000 - 1000, 15, Math.random() * 2000 - 1000] as Vector3Tuple))
 
 export const RandomPyramids: React.FC = () => {
     const pyramids = useMemo(() =>

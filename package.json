@@ -12,6 +12,7 @@
     "@flyskypie/dragonbones-threejs": "^0.2.1",
     "@react-three/drei": "^9.51.24",
     "@react-three/fiber": "^8.10.0",
+    "@react-three/rapier": "^0.13.2",
     "@types/howler": "^2.2.7",
     "@types/node": "^18.11.18",
     "@types/three": "^0.148.0",

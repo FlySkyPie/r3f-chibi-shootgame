@@ -5,13 +5,9 @@ import {
   useWasdControls, useFloor, useRaycast, useMouseControls,
   useBGM
 } from './hooks';
-import {
-  Bullets, LaserPointer, RandomPyramids, DragonBonesTicker, ChibiCharacter,
-  CreditPage
-} from './components';
-
+import { DragonBonesTicker, CreditPage } from './components';
+import { Bullets, RandomPyramids, ChibiCharacter, Enemies, LaserPointer, } from './objects';
 import { MinimapHud } from './components/MinimapHud';
-import { Enemies } from './components/Enemies';
 
 function App() {
   // useBGM();

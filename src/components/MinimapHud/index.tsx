@@ -7,7 +7,7 @@ import { usePlayerStore } from '@/store/usePlayerStore';
 import { useBulletStore } from '@/store/useBulletStore';
 import { useEnemyStore } from '@/store/useEnemyStore';
 
-import { RandomPyramids } from '../RandomPyramids';
+import { RandomPyramids } from '../../objects/RandomPyramids';
 
 import { LeftBottomDisplay } from './components/LeftBottomDisplay';
 

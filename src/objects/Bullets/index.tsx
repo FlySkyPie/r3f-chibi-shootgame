@@ -65,8 +65,11 @@ export const Bullets: React.FC = () => {
                 position={position}
                 lockRotations
                 lockTranslations>
-                <BallCollider name="bullet"
-                    args={[1.0]} onIntersectionEnter={() => {
+                <BallCollider
+                    name="bullet"
+                    sensor
+                    args={[1.0]}
+                    onIntersectionEnter={() => {
                         remove(id);
                     }} />
             </RigidBody>

@@ -1,6 +1,6 @@
-import React, { Suspense, useEffect } from 'react'
+import React, { Suspense, } from 'react'
 import { Canvas, } from '@react-three/fiber';
-import { Physics, RigidBody, Debug } from "@react-three/rapier";
+import { Physics, } from "@react-three/rapier";
 
 import {
   useWasdControls, useFloor, useRaycast, useMouseControls,
@@ -10,8 +10,8 @@ import { DragonBonesTicker, CreditPage } from './components';
 import { Bullets, RandomPyramids, ChibiCharacter, Enemies, LaserPointer, } from './objects';
 import { MinimapHud } from './components/MinimapHud';
 
-function App() {
-  // useBGM();
+function App(): React.ReactNode {
+  useBGM();
   const { controlsHook, } = useWasdControls();
   const { floorView, floorMesh } = useFloor();
   const { raycastHook } = useRaycast({ floorMesh });
@@ -32,7 +32,7 @@ function App() {
             <fogExp2 attach="fog" args={[0xcccccc, 0.005]} />
 
             {floorView}
-            <RandomPyramids />
+            <RandomPyramids collision={true} />
 
             <ChibiCharacter />
             <Bullets />
@@ -49,7 +49,7 @@ function App() {
             {controlsHook}
             {raycastHook}
             <DragonBonesTicker />
-            <Debug />
+            {/* <Debug /> */}
           </Physics>
         </Suspense>
       </Canvas >

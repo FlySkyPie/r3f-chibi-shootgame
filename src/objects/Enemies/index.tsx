@@ -19,14 +19,17 @@ export const Enemies: React.FC = () => {
                 position={position}
                 lockRotations
                 lockTranslations>
-                <BallCollider name="bubble"
-                    args={[1.0]} onIntersectionEnter={({ colliderObject }) => {
+                <BallCollider
+                    name="bubble"
+                    args={[1.0]}
+                    onIntersectionEnter={({ colliderObject }) => {
                         if (colliderObject === undefined) {
                             return;
                         }
-                        if (colliderObject.name !== "player") {
+                        if (colliderObject.name === "enemy") {
                             return;
                         }
+
                         removeBullet(id);
                     }} />
             </RigidBody>
@@ -43,7 +46,6 @@ export const Enemies: React.FC = () => {
                 <mesh rotation={[0, 0, -Math.PI * 0.5]}>
                     <cylinderGeometry args={[0, 8, 16]} />
                     <meshStandardMaterial
-                        // color={damaged ? 0xb85358 : 0x6f6f66}
                         color={0x6f6f66}
                         emissive={damaged ? 0xb81a22 : 0}
                     />
@@ -66,9 +68,6 @@ export const Enemies: React.FC = () => {
                         }
 
                         damage(id);
-                        /**
-                         * @todo Damage enemy
-                         */
                     }}
                 />
             </RigidBody>

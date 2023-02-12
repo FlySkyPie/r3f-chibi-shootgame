@@ -75,7 +75,6 @@ export const Bullets: React.FC = () => {
                 <meshStandardMaterial color={0xff9000} emissive={0xffba60} />
             </mesh>
         </Fragment>
-
     ), [bullets]);
 
     return <>{bulletsView}</>;

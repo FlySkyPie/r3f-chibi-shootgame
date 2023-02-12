@@ -1,7 +1,8 @@
 import { useFrame } from "@react-three/fiber";
-import { useMemo, useRef } from "react";
+import { Fragment, useMemo, useRef } from "react";
 import { Vector3, Vector3Tuple } from "three";
 import { Howl } from 'howler';
+import { BallCollider, RigidBody } from "@react-three/rapier";
 
 import { useBulletStore } from "@/store/useBulletStore";
 import { usePlayerStore } from "@/store/usePlayerStore";
@@ -18,7 +19,7 @@ export const Bullets: React.FC = () => {
         player: { position, status, rotation },
         weapon: { target }
     } = usePlayerStore();
-    const { bullets, tick, add } = useBulletStore();
+    const { bullets, tick, add, remove } = useBulletStore();
 
     const centerPoint = useMemo<Vector3Tuple>(() => [
         position[0],
@@ -59,12 +60,23 @@ export const Bullets: React.FC = () => {
     })
 
     const bulletsView = useMemo(() => bullets.map(({ id, position }) =>
-        <mesh
-            key={id}
-            position={position}>
-            <sphereGeometry args={[0.5, 12, 12]} />
-            <meshStandardMaterial color={0xff9000} emissive={0xffba60} />
-        </mesh>), [bullets]);
+        <Fragment key={id}>
+            <RigidBody
+                position={position}
+                lockRotations
+                lockTranslations>
+                <BallCollider name="bullet"
+                    args={[1.0]} onIntersectionEnter={() => {
+                        remove(id);
+                    }} />
+            </RigidBody>
+            <mesh position={position}>
+                <sphereGeometry args={[0.5, 12, 12]} />
+                <meshStandardMaterial color={0xff9000} emissive={0xffba60} />
+            </mesh>
+        </Fragment>
+
+    ), [bullets]);
 
     return <>{bulletsView}</>;
 }

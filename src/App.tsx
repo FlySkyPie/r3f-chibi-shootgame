@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react'
-import { Canvas, } from '@react-three/fiber'
+import React, { Suspense, useEffect } from 'react'
+import { Canvas, } from '@react-three/fiber';
+import { Physics, RigidBody, Debug } from "@react-three/rapier";
 
 import {
   useWasdControls, useFloor, useRaycast, useMouseControls,
@@ -22,30 +23,35 @@ function App() {
         gl={{ antialias: true, }}
         camera={{ position: [40, 40, 40], far: 10000, near: 1 }}
         {...mouseHandlers}>
-        <color attach="background" args={[0x69655b]} />
-        <directionalLight args={[0xffffff]} position={[1, 1, 1]} />
-        <directionalLight args={[0x002288]} position={[-1, -1, -1]} />
-        <ambientLight args={[0x222222]} />
-        <fogExp2 attach="fog" args={[0xcccccc, 0.005]} />
+        <Suspense>
+          <Physics>
+            <color attach="background" args={[0x69655b]} />
+            <directionalLight args={[0xffffff]} position={[1, 1, 1]} />
+            <directionalLight args={[0x002288]} position={[-1, -1, -1]} />
+            <ambientLight args={[0x222222]} />
+            <fogExp2 attach="fog" args={[0xcccccc, 0.005]} />
 
-        {floorView}
-        <RandomPyramids />
+            {floorView}
+            <RandomPyramids />
 
-        <ChibiCharacter />
-        <Bullets />
-        <Enemies />
+            <ChibiCharacter />
+            <Bullets />
+            <Enemies />
 
 
-        {/* <axesHelper args={[100]} position={[0, 1, 0]} /> */}
+            {/* <axesHelper args={[100]} position={[0, 1, 0]} /> */}
 
-        <LaserPointer />
+            <LaserPointer />
 
-        <MinimapHud />
+            <MinimapHud />
 
-        {/* <MapControls /> */}
-        {controlsHook}
-        {raycastHook}
-        <DragonBonesTicker />
+            {/* <MapControls /> */}
+            {controlsHook}
+            {raycastHook}
+            <DragonBonesTicker />
+            <Debug />
+          </Physics>
+        </Suspense>
       </Canvas >
       <CreditPage />
     </>

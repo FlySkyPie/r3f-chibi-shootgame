@@ -15,6 +15,7 @@ type IBullet = {
 interface IBulletStore {
     bullets: IBullet[],
     add: (position: Vector3Tuple, direction: Vector3Tuple, team: 'player' | 'enemy') => void;
+    remove: (id: string) => void
     tick: (delta: number) => void;
 }
 
@@ -30,6 +31,9 @@ export const useBulletStore = create<IBulletStore>((set) => ({
                 position, velocity,
             }]
         };
+    }),
+    remove: (id: string) => set(({ bullets }) => {
+        return { bullets: bullets.filter(item => item.id !== id) };
     }),
     tick: (deltaSecond) => set(({ bullets }) => {
         const updated: IBullet[] = bullets.map(({ id, position, velocity, life, team }) => ({

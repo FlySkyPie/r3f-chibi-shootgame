@@ -23,7 +23,7 @@ export const Bullets: React.FC = () => {
 
     const centerPoint = useMemo<Vector3Tuple>(() => [
         position[0],
-        position[1] + 8.0,
+        position[1],
         position[2],
     ], [position]);
 

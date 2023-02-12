@@ -9,7 +9,7 @@ type IRayCastHookProps = {
 };
 
 const RaycastHook: React.FC<IRayCastHookProps> = ({ floorMesh }) => {
-    const { player: { position, rotation }, aim } = usePlayerStore();
+    const { aim } = usePlayerStore();
     const { camera, gl } = useThree();
     const [pointer, setPointer] = useState<[number, number]>([0, 0]);
     const [raycaster] = useState(() => new Raycaster());
@@ -25,7 +25,7 @@ const RaycastHook: React.FC<IRayCastHookProps> = ({ floorMesh }) => {
         if (intersects.length > 0) {
             const point = intersects[0].point;
 
-            aim(point.toArray());
+            aim(point.clone().add(new Vector3(0, 8, 0)).toArray());
         }
     })
 

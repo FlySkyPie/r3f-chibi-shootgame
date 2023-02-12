@@ -19,7 +19,7 @@ export const Enemies: React.FC = () => {
                 position={position}
                 lockRotations
                 lockTranslations>
-                <BallCollider name="bullet"
+                <BallCollider name="bubble"
                     args={[1.0]} onIntersectionEnter={({ colliderObject }) => {
                         if (colliderObject === undefined) {
                             return;
@@ -32,7 +32,7 @@ export const Enemies: React.FC = () => {
             </RigidBody>
             <mesh position={position}>
                 <sphereGeometry args={[4, 12, 12]} />
-                <meshStandardMaterial color={0xff9000} emissive={0xffba60} />
+                <meshStandardMaterial color={0x000000} emissive={0x350256} />
             </mesh>
         </Fragment>
     ), [bullets]);
@@ -40,7 +40,7 @@ export const Enemies: React.FC = () => {
     const enemiesView = useMemo(() => enemies.map(({ id, position, rotation, damaged }) =>
         <Fragment key={id} >
             <group position={position} rotation={[0, rotation, 0]}>
-                <mesh position={[0, 8, 0]} rotation={[0, 0, -Math.PI * 0.5]}>
+                <mesh rotation={[0, 0, -Math.PI * 0.5]}>
                     <cylinderGeometry args={[0, 8, 16]} />
                     <meshStandardMaterial
                         // color={damaged ? 0xb85358 : 0x6f6f66}
@@ -50,13 +50,11 @@ export const Enemies: React.FC = () => {
                 </mesh>
             </group>
             <RigidBody
-                key={id}
                 position={position}
                 lockRotations
                 lockTranslations>
                 <CuboidCollider
                     name="enemy"
-                    position={[0, 8, 0]}
                     args={[8, 8, 8]}
                     sensor
                     onIntersectionEnter={({ colliderObject }) => {

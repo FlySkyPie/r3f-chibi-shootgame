@@ -2,7 +2,7 @@ import { Vector3, Vector3Tuple } from 'three';
 import { create } from 'zustand'
 import { nanoid } from 'nanoid';
 
-const muzzleVelocity = 10;
+const muzzleVelocity = 100;
 
 type IBullet = {
     id: string;
@@ -22,7 +22,7 @@ interface IBulletStore {
 export const useBulletStore = create<IBulletStore>((set) => ({
     bullets: [],
     add: (position, direction, team) => set(({ bullets }) => {
-        const velocity = new Vector3(...direction).multiplyScalar(muzzleVelocity).toArray();
+        const velocity = new Vector3(...direction).normalize().multiplyScalar(muzzleVelocity).toArray();
         return {
             bullets: [...bullets, {
                 id: nanoid(),

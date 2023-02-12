@@ -35,7 +35,7 @@ interface IPlayerStore {
 
 export const usePlayerStore = create<IPlayerStore>((set) => ({
     player: {
-        position: [0, 0, 0,],
+        position: [0, 8, 0,],
         rotation: 0,
         status: 'idle',
         direction: 'right',

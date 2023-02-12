@@ -14,7 +14,7 @@ export const LaserPointer: React.FC = ({ }) => {
 
     const centerPoint = useMemo<Vector3Tuple>(() => [
         point0[0],
-        point0[1] + 8.0,
+        point0[1] ,
         point0[2],
     ], [point0]);
 

@@ -8,6 +8,7 @@ import { usePlayerStore } from '@/store/usePlayerStore';
 import skeJson from './lyana/lyana_ske.json';
 import texJson from './lyana/lyana_tex.json';
 import texPng from './lyana/lyana_tex.png';
+import { CuboidCollider, RigidBody } from '@react-three/rapier';
 
 export const ChibiCharacter: React.FC = () => {
     const {
@@ -35,7 +36,7 @@ export const ChibiCharacter: React.FC = () => {
             throw new Error('');
         }
 
-        
+
 
         armatureDisplay.scale.set(0.1, -0.1, 0.1);
         armatureDisplay.translateY(1);
@@ -84,8 +85,36 @@ export const ChibiCharacter: React.FC = () => {
 
 
     return (
-        <Billboard position={position}>
-            <group ref={ref => setGroup(ref)} />
-        </Billboard>
+        <>
+            <group position={position}>
+                <Billboard position={[0, -8, 0]}>
+                    <group ref={ref => setGroup(ref)} />
+                </Billboard>
+            </group>
+            <RigidBody
+                position={position}
+                lockRotations
+                lockTranslations>
+                <CuboidCollider
+                    name="player"
+                    args={[4, 8, 4]}
+                    sensor
+                    onIntersectionEnter={({ colliderObject }) => {
+                        if (colliderObject === undefined) {
+                            return;
+                        }
+                        if (colliderObject.name !== "bubble") {
+                            return;
+                        }
+
+
+                        /**
+                         * @todo Damage player
+                         */
+                    }}
+                />
+            </RigidBody>
+        </>
+
     );
 };

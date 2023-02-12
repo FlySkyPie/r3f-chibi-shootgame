@@ -3,10 +3,14 @@ import { Vector2Tuple, Vector3, Vector3Tuple } from 'three';
 import { create } from 'zustand'
 import { nanoid } from 'nanoid';
 
+const bubleSpeed = 30;
+const bubleLife = 4;
+
 type IEnemy = {
     id: string;
     health: number;
     rotation: number;
+    rotationType: 'R' | 'L';
     position: Vector3Tuple;
     velocity: Vector3Tuple;
     damaged: number;
@@ -25,14 +29,15 @@ const createRandEnemies = (): IEnemy[] => {
         id: nanoid(),
         health: 100.0,
         rotation: 0,
+        rotationType: Math.random() > 0.5 ? 'R' : 'L',
         position: [
             (Math.random() - 0.5) * 500,
-            0,
+            8,
             (Math.random() - 0.5) * 500,
         ],
         velocity: [0, 0, 0],
         damaged: 0,
-        cooldown: 0,
+        cooldown: Math.random() * 2,
     }))
 };
 
@@ -54,6 +59,7 @@ export const useEnemyStore = create<IEnemyStore>((set) => ({
                 id: nanoid(),
                 health: 100.0,
                 rotation: 0,
+                rotationType: Math.random() > 0.5 ? 'R' : 'L',
                 position,
                 velocity: [0, 0, 0],
                 damaged: 0,
@@ -79,13 +85,17 @@ export const useEnemyStore = create<IEnemyStore>((set) => ({
         const targetPosition = new Vector3(..._targetPosition);
         const upVector = new Vector3(0, 1, 0);
 
-        const updatedEnemies: IEnemy[] = enemies.map((enemy) => {
-            const { id, position: _position, velocity, damaged: _damaged, } = enemy;
+        const preparedEnemies = enemies.map((enemy) => {
+            const {
+                id, position: _position, velocity, damaged: _damaged, cooldown: _cooldown,
+                rotationType
+            } = enemy;
             const position = new Vector3(..._position);
-            
+
             const difference = new Vector3(..._targetPosition).sub(position);
             const rotation = -Math.atan2(difference.z, difference.x);
             const damaged = (_damaged - deltaSecond) <= 0 ? 0 : _damaged - deltaSecond;
+            const cooldown = (_cooldown - deltaSecond) <= 0 ? 0 : _cooldown - deltaSecond;
 
             const distance = difference.length();
             const updatedPosition = distance > 100 ?
@@ -93,7 +103,7 @@ export const useEnemyStore = create<IEnemyStore>((set) => ({
                 targetPosition.clone().add(
                     difference.clone()
                         .multiplyScalar(-1)
-                        .applyAxisAngle(upVector, 0.01));
+                        .applyAxisAngle(upVector, rotationType === 'R' ? 0.01 : -0.01));
 
             return {
                 ...enemy,
@@ -101,8 +111,27 @@ export const useEnemyStore = create<IEnemyStore>((set) => ({
                 position: updatedPosition.toArray(),
                 damaged,
                 rotation,
+                difference,
+                distance,
+                cooldown,
             };
         });
+
+        const newBullets: IBullet[] = preparedEnemies.filter(({ cooldown, distance }) =>
+            cooldown <= 0 && distance <= 200).map(({ position, difference }) => {
+                return {
+                    id: nanoid(),
+                    life: bubleLife,
+                    position,
+                    velocity: difference.clone().normalize().multiplyScalar(bubleSpeed).toArray(),
+                }
+            });
+
+        const updatedEnemies: IEnemy[] = preparedEnemies.map(({
+            id, health, rotation, rotationType, position, velocity, damaged, distance, cooldown }) => ({
+                id, health, rotation, rotationType, position, velocity, damaged,
+                cooldown: (cooldown <= 0 && distance <= 200) ? 2 : cooldown,
+            }));
 
         const updatedBullets: IBullet[] = bullets.map(({ id, position, velocity, life, }) => ({
             id, velocity,
@@ -113,7 +142,7 @@ export const useEnemyStore = create<IEnemyStore>((set) => ({
 
         return {
             enemies: updatedEnemies,
-            bullets: updatedBullets,
+            bullets: [...updatedBullets, ...newBullets],
         };
     }),
 }));

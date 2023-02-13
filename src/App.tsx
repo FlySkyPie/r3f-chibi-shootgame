@@ -10,7 +10,7 @@ import { DragonBonesTicker, CreditPage } from './components';
 import { Bullets, RandomPyramids, ChibiCharacter, Enemies, LaserPointer, } from './objects';
 import { MinimapHud } from './components/MinimapHud';
 
-function App(): React.ReactNode {
+function App() {
   useBGM();
   const { controlsHook, } = useWasdControls();
   const { floorView, floorMesh } = useFloor();
@@ -55,7 +55,6 @@ function App(): React.ReactNode {
       </Canvas >
       <CreditPage />
     </>
-
   )
 }
 
